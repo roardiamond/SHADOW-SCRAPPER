@@ -23,118 +23,82 @@
 
         .scanline {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: linear-gradient(to bottom, transparent 50%, rgba(0, 255, 65, 0.03) 50%);
             background-size: 100% 4px;
-            pointer-events: none;
             animation: scan 4s linear infinite;
+            pointer-events: none;
             z-index: 1;
         }
 
-        @keyframes scan {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-        }
+        @keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
 
         .card {
             background: #111;
             border: 2px solid #00ff41;
-            box-shadow: 0 0 30px #00ff41, inset 0 0 20px rgba(0, 255, 65, 0.2);
-            width: 420px;
+            box-shadow: 0 0 30px #00ff41;
+            width: 460px;
             padding: 25px;
-            position: relative;
             z-index: 2;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 1px dashed #00ff41;
-            padding-bottom: 10px;
         }
 
         .header h1 {
             font-size: 28px;
-            margin: 0;
+            text-align: center;
             text-shadow: 0 0 10px #00ff41;
-            letter-spacing: 4px;
+            margin: 0 0 10px 0;
         }
 
         .status {
             color: #ff0000;
-            font-size: 14px;
             text-align: center;
-            margin: 8px 0;
             animation: blink 1s infinite;
         }
 
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
+        @keyframes blink { 50% { opacity: 0; } }
 
         input {
+            width: 100%;
+            padding: 12px;
             background: #000;
             border: 1px solid #00ff41;
             color: #00ff41;
-            padding: 12px;
-            width: 100%;
-            font-family: 'VT323', monospace;
             font-size: 18px;
             margin-bottom: 15px;
         }
 
         button {
+            width: 100%;
+            padding: 15px;
             background: #00ff41;
             color: #000;
             border: none;
-            padding: 15px;
-            width: 100%;
-            font-family: 'VT323', monospace;
             font-size: 22px;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 0 15px #00ff41;
+            margin: 8px 0;
         }
 
-        button:hover {
-            background: #ff0000;
-            color: #fff;
-            box-shadow: 0 0 25px #ff0000;
-        }
+        button:hover { background: #ff0000; color: white; }
 
         .output {
-            margin-top: 20px;
             background: #000;
             border: 1px solid #00ff41;
             padding: 15px;
-            min-height: 180px;
-            font-size: 16px;
-            white-space: pre-wrap;
+            min-height: 220px;
+            max-height: 280px;
             overflow-y: auto;
-            max-height: 250px;
+            white-space: pre-wrap;
+            margin-top: 10px;
+            font-size: 16px;
         }
 
-        .footer {
-            text-align: center;
+        #downloadBtn {
+            display: none;
+            background: #00ff00;
+            color: black;
+            font-size: 20px;
             margin-top: 15px;
-            font-size: 14px;
-            color: #00aa33;
-        }
-
-        .glitch {
-            animation: glitch 0.5s infinite;
-        }
-
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
         }
     </style>
 </head>
@@ -143,59 +107,67 @@
     
     <div class="card">
         <div class="header">
-            <h1 class="glitch">SHADOW SCRAPER</h1>
-            <div class="status">● UNDERCOVER MODE ACTIVE ● TOR ROUTED ●</div>
+            <h1>SHADOW SCRAPER</h1>
+            <div class="status">● UNDERCOVER MODE ● GITHUB LIVE ●</div>
         </div>
         
-        <input type="text" id="target" placeholder="ENTER TARGET URL[](http://victim.com)" value="https://example.com">
+        <input type="text" id="target" placeholder="ENTER TARGET URL" value="https://target.com">
         
-        <button onclick="scrape()">INITIATE SCRAPE ATTACK</button>
+        <button onclick="startScrape()">INITIATE SCRAPE ATTACK</button>
         
-        <div class="output" id="result">
-[SYSTEM READY]
-Waiting for target...
-        </div>
+        <div class="output" id="result">[SYSTEM READY]\nWaiting for target...</div>
         
-        <div class="footer">
-            v0.8.1 | NO TRACE LEFT | SCRAPE THE SYSTEM
+        <button id="downloadBtn" onclick="downloadLoot()">⬇ DOWNLOAD ALL LOOT (ZIP)</button>
+        
+        <div style="text-align:center; margin-top:15px; font-size:14px; color:#00aa33;">
+            v1| NO TRACE | BREAK THE SYSTEM
         </div>
     </div>
 
     <script>
-        function scrape() {
-            const target = document.getElementById('target').value;
+        async function startScrape() {
+            const url = document.getElementById('target').value || "https://target.com";
             const result = document.getElementById('result');
+            const downloadBtn = document.getElementById('downloadBtn');
             
-            result.innerHTML = `[+] CONNECTING TO PROXY...\n`;
+            result.innerHTML = `[+] CONNECTING THROUGH TOR...\n`;
             
-            setTimeout(() => {
-                result.innerHTML += `[+] BYPASSING CLOUDFLARE...\n`;
-            }, 400);
+            await new Promise(r => setTimeout(r, 600));
+            result.innerHTML += `[+] BYPASSING FIREWALL...\n`;
             
-            setTimeout(() => {
-                result.innerHTML += `[+] SCRAPING IN PROGRESS... ${target}\n`;
-            }, 900);
+            await new Promise(r => setTimeout(r, 700));
+            result.innerHTML += `[+] SCRAPING STARTED → ${url}\n`;
             
-            setTimeout(() => {
-                result.innerHTML += `-------------------------------\n`;
-                result.innerHTML += `EMAILS FOUND: 47\n`;
-                result.innerHTML += `PASSWORDS HASHED: 23\n`;
-                result.innerHTML += `USER AGENTS: 156\n`;
-                result.innerHTML += `SENSITIVE DATA: 89kb\n`;
-                result.innerHTML += `[+] DATA SAVED TO /shadow/loot/${Date.now()}.txt\n`;
-                result.innerHTML += `-------------------------------\n`;
-                result.innerHTML += `MISSION COMPLETE BHAI 🔥\n`;
-            }, 1800);
+            await new Promise(r => setTimeout(r, 800));
+            result.innerHTML += `[+] EMAILS: 87 | PASSWORDS: 34 | DB DUMPS: 12\n`;
+            
+            await new Promise(r => setTimeout(r, 600));
+            result.innerHTML += `[+] IMAGES + COOKIES + SESSION DATA CAPTURED\n`;
+            
+            await new Promise(r => setTimeout(r, 900));
+            result.innerHTML += `[+] SCRAPING SUCCESSFUL BHAI! 🔥\n[+] Total Data: 14.8 MB\n`;
+            
+            // Show download button
+            downloadBtn.style.display = 'block';
         }
 
-        // Auto type effect
-        document.addEventListener('keydown', function(e) {
-            if (e.key === "Enter") {
-                scrape();
-            }
-        });
-        
-        console.log("%cUNDERCOVER HACKING MODE ENABLED - DON'T GET CAUGHT MF", "color: red; font-size: 20px");
+        function downloadLoot() {
+            const result = document.getElementById('result');
+            result.innerHTML += `\n[+] PREPARING LOOT ZIP...\n`;
+            
+            // Fake ZIP download
+            const content = "SHADOW SCRAPER LOOT\n\nTarget: " + document.getElementById('target').value + 
+                           "\nDate: " + new Date().toISOString() +
+                           "\n\n=== EMAILS ===\nadmin@target.com\nceo@target.com\n\n=== PASSWORDS ===\nhash123456\nadmin2025\n\n=== DATA DUMP ===\n[REDACTED FOR DEMO]";
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'shadow_loot_' + Date.now() + '.zip';
+            link.click();
+            
+            result.innerHTML += `[+] LOOT DOWNLOADED SUCCESSFULLY! 🔥\n`;
+        }
     </script>
 </body>
 </html>
