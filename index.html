@@ -6,167 +6,85 @@
     <title>SHADOW SCRAPER v0.8.1</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-        
-        body {
-            margin: 0;
-            padding: 0;
-            background: #0a0a0a;
-            color: #00ff41;
-            font-family: 'VT323', monospace;
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .scanline {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(to bottom, transparent 50%, rgba(0, 255, 65, 0.03) 50%);
-            background-size: 100% 4px;
-            animation: scan 4s linear infinite;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        @keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
-
-        .card {
-            background: #111;
-            border: 2px solid #00ff41;
-            box-shadow: 0 0 30px #00ff41;
-            width: 460px;
-            padding: 25px;
-            z-index: 2;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            text-align: center;
-            text-shadow: 0 0 10px #00ff41;
-            margin: 0 0 10px 0;
-        }
-
-        .status {
-            color: #ff0000;
-            text-align: center;
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink { 50% { opacity: 0; } }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            background: #000;
-            border: 1px solid #00ff41;
-            color: #00ff41;
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-
-        button {
-            width: 100%;
-            padding: 15px;
-            background: #00ff41;
-            color: #000;
-            border: none;
-            font-size: 22px;
-            cursor: pointer;
-            margin: 8px 0;
-        }
-
-        button:hover { background: #ff0000; color: white; }
-
-        .output {
-            background: #000;
-            border: 1px solid #00ff41;
-            padding: 15px;
-            min-height: 220px;
-            max-height: 280px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            margin-top: 10px;
-            font-size: 16px;
-        }
-
-        #downloadBtn {
-            display: none;
-            background: #00ff00;
-            color: black;
-            font-size: 20px;
-            margin-top: 15px;
-        }
+        body {margin:0;background:#0a0a0a;color:#00ff41;font-family:'VT323',monospace;height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+        .scanline {position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to bottom, transparent 50%, rgba(0,255,65,0.03) 50%);background-size:100% 4px;animation:scan 4s linear infinite;pointer-events:none;z-index:1;}
+        @keyframes scan {0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}
+        .card {background:#111;border:2px solid #00ff41;box-shadow:0 0 30px #00ff41;width:480px;padding:25px;z-index:2;}
+        .header h1 {font-size:28px;text-align:center;text-shadow:0 0 10px #00ff41;}
+        .status {color:#ff0000;text-align:center;animation:blink 1s infinite;}
+        @keyframes blink {50%{opacity:0;}}
+        input, button {width:100%;padding:12px;margin:8px 0;background:#000;border:1px solid #00ff41;color:#00ff41;font-size:18px;}
+        button {background:#00ff41;color:#000;font-size:22px;cursor:pointer;}
+        button:hover {background:#ff0000;color:white;}
+        .output {background:#000;border:1px solid #00ff41;padding:15px;min-height:260px;max-height:320px;overflow-y:auto;white-space:pre-wrap;font-size:16px;}
+        #downloadBtn {display:none;background:#00ff00;color:black;font-size:20px;margin-top:12px;}
     </style>
 </head>
 <body>
     <div class="scanline"></div>
-    
     <div class="card">
         <div class="header">
             <h1>SHADOW SCRAPER</h1>
-            <div class="status">● UNDERCOVER MODE ● GITHUB LIVE ●</div>
+            <div class="status">● CLONING MODE ACTIVE ●</div>
         </div>
         
-        <input type="text" id="target" placeholder="ENTER TARGET URL" value="https://target.com">
+        <input type="text" id="target" placeholder="https://target.com" value="https://example.com">
+        <button onclick="startCloning()">INITIATE SCRAPE ATTACK</button>
         
-        <button onclick="startScrape()">INITIATE SCRAPE ATTACK</button>
+        <div class="output" id="result">[+] SHADOW CLONER v0.8.1 READY\n</div>
         
-        <div class="output" id="result">[SYSTEM READY]\nWaiting for target...</div>
-        
-        <button id="downloadBtn" onclick="downloadLoot()">⬇ DOWNLOAD ALL LOOT (ZIP)</button>
-        
-        <div style="text-align:center; margin-top:15px; font-size:14px; color:#00aa33;">
-            v1| NO TRACE | BREAK THE SYSTEM
-        </div>
+        <button id="downloadBtn" onclick="downloadLoot()">⬇ DOWNLOAD CLONED WEBSITE (ZIP)</button>
     </div>
 
     <script>
-        async function startScrape() {
-            const url = document.getElementById('target').value || "https://target.com";
+        let visitedCount = 0;
+
+        async function startCloning() {
+            const url = document.getElementById('target').value.trim();
             const result = document.getElementById('result');
             const downloadBtn = document.getElementById('downloadBtn');
             
-            result.innerHTML = `[+] CONNECTING THROUGH TOR...\n`;
-            
-            await new Promise(r => setTimeout(r, 600));
-            result.innerHTML += `[+] BYPASSING FIREWALL...\n`;
-            
-            await new Promise(r => setTimeout(r, 700));
-            result.innerHTML += `[+] SCRAPING STARTED → ${url}\n`;
-            
-            await new Promise(r => setTimeout(r, 800));
-            result.innerHTML += `[+] EMAILS: 87 | PASSWORDS: 34 | DB DUMPS: 12\n`;
-            
-            await new Promise(r => setTimeout(r, 600));
-            result.innerHTML += `[+] IMAGES + COOKIES + SESSION DATA CAPTURED\n`;
-            
-            await new Promise(r => setTimeout(r, 900));
-            result.innerHTML += `[+] SCRAPING SUCCESSFUL BHAI! 🔥\n[+] Total Data: 14.8 MB\n`;
-            
-            // Show download button
+            if (!url) {
+                result.innerHTML += "❌ URL daal bhai!\n";
+                return;
+            }
+
+            result.innerHTML = `[+] 🚀 Starting full clone of ${url}\n`;
+            visitedCount = 0;
+
+            // Simulate Python script
+            const messages = [
+                `[+] scrapped thanks for using scrapper by yashxchi🥷: ${url}`,
+                "[+] scrapping: " + url + "/about",
+                "[+] scrapped thanks for using scrapper by yashxchi🥷: " + url + "/assets/style.css",
+                "[+] scrapping: " + url + "/contact",
+                "[+] scrapped thanks for using scrapper by yashxchi🥷: " + url + "/logo.png",
+                "[+] Total pages/assets cloned: 47",
+                "[+] Errors: 3"
+            ];
+
+            for (let msg of messages) {
+                await new Promise(r => setTimeout(r, 700 + Math.random()*600));
+                result.innerHTML += msg + "\n";
+                visitedCount++;
+                result.scrollTop = result.scrollHeight;
+            }
+
+            result.innerHTML += `\n🎉 DONE! by yashxchi🥷\n`;
             downloadBtn.style.display = 'block';
         }
 
         function downloadLoot() {
-            const result = document.getElementById('result');
-            result.innerHTML += `\n[+] PREPARING LOOT ZIP...\n`;
+            const target = document.getElementById('target').value;
+            const content = `SHADOW CLONER LOOT\nTarget: ${target}\nCloned by: yashxchi🥷\nDate: ${new Date().toISOString()}\n\nTotal files: ${visitedCount}\n\nThank you for using SHADOW SCRAPER!`;
             
-            // Fake ZIP download
-            const content = "SHADOW SCRAPER LOOT\n\nTarget: " + document.getElementById('target').value + 
-                           "\nDate: " + new Date().toISOString() +
-                           "\n\n=== EMAILS ===\nadmin@target.com\nceo@target.com\n\n=== PASSWORDS ===\nhash123456\nadmin2025\n\n=== DATA DUMP ===\n[REDACTED FOR DEMO]";
-            
-            const blob = new Blob([content], { type: 'text/plain' });
+            const blob = new Blob([content], {type: 'text/plain'});
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = 'shadow_loot_' + Date.now() + '.zip';
+            link.download = `cloned_${target.replace(/https?:\/\//, '').replace(/[^a-zA-Z0-9]/g, '_')}.zip`;
             link.click();
-            
-            result.innerHTML += `[+] LOOT DOWNLOADED SUCCESSFULLY! 🔥\n`;
+
+            document.getElementById('result').innerHTML += `\n[+] LOOT ZIP DOWNLOADED SUCCESSFULLY 🔥\n`;
         }
     </script>
 </body>
